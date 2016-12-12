@@ -8,6 +8,7 @@ import java.util.*;
 
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
+import com.goeuro.busroute.datatstructures.DisjointSet;
 import com.goeuro.busroute.messages.DataChangedNotice;
 import com.goeuro.busroute.messages.FindRoute;
 import com.goeuro.busroute.messages.FindRouteResponse;
@@ -19,7 +20,8 @@ import com.goeuro.busroute.messages.FindRouteResponse;
 public class RouteFinderWorker extends UntypedActor {
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private final File dataFile;
-    private int[][] routes;
+    private Map<Integer, Integer> actualStationIdVsVirtualStationIndex;
+    private DisjointSet set = new DisjointSet();
 
     public RouteFinderWorker(File dataFile) {
         this.dataFile = dataFile;
@@ -31,19 +33,29 @@ public class RouteFinderWorker extends UntypedActor {
         try {
             Scanner dateFileReader = new Scanner(new FileInputStream(dataFile));
             int busRoutesCount = Integer.parseInt(dateFileReader.nextLine());
-            routes = new int[busRoutesCount][];
+            actualStationIdVsVirtualStationIndex = new HashMap<>(busRoutesCount);
+            int virtualId = 0;
             for (int i = 0; i < busRoutesCount; i++) {
                 String[] row = dateFileReader.nextLine().split(" ");
-                int stations[] = new int[row.length - 1];
-                for (int z = 1; z < row.length; z++) {
-                    stations[z - 1] = Integer.parseInt(row[z]);
+                for (int z = 2; z < row.length; z++) {
+                    int stationId = Integer.parseInt(row[z]);
+                    int previousStationId = Integer.parseInt(row[z - 1]);
+                    if (!actualStationIdVsVirtualStationIndex.containsKey(stationId)) {
+                        actualStationIdVsVirtualStationIndex.put(stationId, virtualId);
+                        virtualId++;
+                    }
+                    if (!actualStationIdVsVirtualStationIndex.containsKey(previousStationId)) {
+                        actualStationIdVsVirtualStationIndex.put(previousStationId, virtualId);
+                        virtualId++;
+                    }
+                    set.union(actualStationIdVsVirtualStationIndex.get(previousStationId),
+                            actualStationIdVsVirtualStationIndex.get(stationId));
                 }
-                Arrays.sort(stations);
-                routes[i]=stations;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             log.error(ex, "in data loading");
+            getContext().system().terminate();
         }
     }
 
@@ -53,16 +65,11 @@ public class RouteFinderWorker extends UntypedActor {
             loadData();
         } else if (message instanceof FindRoute) {
             FindRoute command = (FindRoute) message;
-            boolean routeExist = false;
-            for (int stations[] : routes) {
-                int arrivalStationIndex = Arrays.binarySearch(stations, command.getArrival());
-                int departureStationIndex = Arrays.binarySearch(stations, command.getDeparture());
-                if (arrivalStationIndex > -1 && departureStationIndex > -1) {
-                    routeExist = true;
-                    break;
-                }
-            }
-            getSender().tell(new FindRouteResponse(command.getDeparture(), command.getArrival(), routeExist), getSelf());
+            int parent = set.connectedBy(actualStationIdVsVirtualStationIndex.get(command.getArrival())
+                    , actualStationIdVsVirtualStationIndex.get(command.getDeparture()));
+            FindRouteResponse response = new FindRouteResponse(command.getDeparture(), command.getArrival(), parent != -1);
+            log.info(response.toString() + " through " + parent);
+            getSender().tell(response, getSelf());
         }
     }
 

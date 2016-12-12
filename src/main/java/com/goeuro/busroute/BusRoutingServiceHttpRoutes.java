@@ -52,7 +52,6 @@ public class BusRoutingServiceHttpRoutes extends AllDirectives {
                     new FindRoute(UUID.randomUUID().toString(), departure, arrival),
                     timeout).thenApply((FindRouteResponse.class::cast));
             return onSuccess(() -> findRouteResponseFutrue, response -> {
-                        log.info(response.toString());
                         return completeOK(response, Jackson.marshaller());
                     }
             );

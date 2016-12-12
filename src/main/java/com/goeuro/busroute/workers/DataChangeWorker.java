@@ -20,8 +20,8 @@ public class DataChangeWorker extends UntypedActor {
     private final File dataFile;
     private final ActorRef routeFinderWorker;
     private long dataFileModifiedDate;
-
-    public DataChangeWorker(File dataFile, ActorRef routeFinderWorker) {
+    private static ActorRef dataChangeWorkerInstance;
+    private DataChangeWorker(File dataFile, ActorRef routeFinderWorker) {
         this.dataFile = dataFile;
         this.routeFinderWorker=routeFinderWorker;
         this.dataFileModifiedDate = dataFile.lastModified();

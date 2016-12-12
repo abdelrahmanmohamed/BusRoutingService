@@ -61,9 +61,12 @@ public class DisjointSet {
         }
     }
 
-    public boolean isConnected(Integer x, Integer y) {
+    public int connectedBy(Integer x, Integer y) {
         Integer ySet = findSet(y);
         Integer xSet = findSet(x);
-        return (xSet == ySet) && xSet != null && ySet != null;
+        if((xSet == ySet) && xSet != null && ySet != null)
+            return ySet;
+        else
+            return -1;
     }
 }

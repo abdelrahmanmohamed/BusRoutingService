@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- DO NOT MODIFY THIS FILE FOR DEVELOPMENT PURPOSES -->
+<!-- This configuration is intended for production -->
+<!-- For development, please use: logback-test.xml -->
+
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <!--<pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%X{akkaSource}] - %msg%n</pattern>-->
+            <pattern>%X{akkaTimestamp} [%thread] %-5level %logger{36} [%X{akkaSource}] - %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log\server-log.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>50MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%X{akkaTimestamp} [%thread] %-5level %logger{36} [%X{akkaSource}] - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.goeuro.busroute" level="INFO" additivity="false">
+        <appender-ref ref="file"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="Remoting" level="INFO" additivity="false"/>
+    <logger name="akka.remote.EndpointWriter" level="INFO" additivity="false"/>
+    <logger name="akka.cluster.ClusterHeartbeatSender" level="INFO" additivity="false"/>
+    <root level="INFO">
+        <appender-ref ref="file"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
+
