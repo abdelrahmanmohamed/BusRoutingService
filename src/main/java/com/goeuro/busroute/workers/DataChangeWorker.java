@@ -35,7 +35,7 @@ public class DataChangeWorker extends UntypedActor {
                 log.info("Data Changed");
                 routeFinderWorker.tell(new DataChangedNotice(UUID.randomUUID().toString()), getSelf());
             }
-            getContext().system().scheduler().scheduleOnce(Duration.create(2, TimeUnit.SECONDS),
+            getContext().system().scheduler().scheduleOnce(Duration.create(1, TimeUnit.SECONDS),
                     getSelf(), new CheckDataChanges(UUID.randomUUID().toString()), getContext().system().dispatcher(), getSelf());
         }
     }
