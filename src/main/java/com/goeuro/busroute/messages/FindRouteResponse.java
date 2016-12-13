@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 /**
- * Created by hhmx3422 on 12/11/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/11/16.
  */
 public class FindRouteResponse implements Serializable {
     private final int departure;
@@ -53,9 +53,9 @@ public class FindRouteResponse implements Serializable {
 
         FindRouteResponse that = (FindRouteResponse) o;
 
-        if (getDeparture() != that.getDeparture()) return false;
-        if (getArrival() != that.getArrival()) return false;
-        return isDirectBusRoute() == that.isDirectBusRoute();
+        return (getDeparture() == that.getDeparture()
+                && getArrival() == that.getArrival()
+                && isDirectBusRoute() == that.isDirectBusRoute());
     }
 
     @Override

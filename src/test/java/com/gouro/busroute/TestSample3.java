@@ -11,7 +11,7 @@ import org.junit.Test;
 
 
 /**
- * Created by hhmx3422 on 12/12/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/12/16.
  */
 public class TestSample3 extends Common {
 
@@ -21,7 +21,7 @@ public class TestSample3 extends Common {
         system.log().info("Generate Test Data");
         int maxRoutesNumber = 100000;
         int stationsNumberInRoute = 10;
-        system.log().info("Test Data Generatation Finished");
+        system.log().info("Test Data Generation Finished");
         super.setup("sample3.txt", maxRoutesNumber, stationsNumberInRoute);
     }
 

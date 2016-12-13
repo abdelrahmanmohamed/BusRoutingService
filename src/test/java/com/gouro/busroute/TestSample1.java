@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 
 
 /**
- * Created by hhmx3422 on 12/12/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/12/16.
  */
 public class TestSample1 extends Common {
     @Before
@@ -33,7 +33,7 @@ public class TestSample1 extends Common {
         pw.println("1 3 1 6 5");
         pw.println("2 0 6 4");
         pw.close();
-        system.log().info("Test Data Generatation Finished");
+        system.log().info("Test Data Generation Finished");
         super.setup();
     }
 

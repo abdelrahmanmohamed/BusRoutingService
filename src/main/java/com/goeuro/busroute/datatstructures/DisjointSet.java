@@ -1,22 +1,12 @@
 package com.goeuro.busroute.datatstructures;
 
 /**
- * Created by hhmx3422 on 12/12/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/11/16.
  */
 
 import java.util.HashMap;
 
 public class DisjointSet {
-    private static class Node {
-        Integer rank;
-        Integer parent;
-
-        Node(Integer parent, Integer rank) {
-            this.parent = parent;
-            this.rank = rank;
-        }
-    }
-
     private final HashMap<Integer, Node> objectsToNodes = new HashMap<>();
 
     private Integer findSet(Integer o) {
@@ -24,7 +14,7 @@ public class DisjointSet {
         if (node == null) {
             return null;
         }
-        if (o != node.parent) {
+        if (!o.equals(node.parent)) {
             node.parent = findSet(node.parent);
         }
         return node.parent;
@@ -37,7 +27,7 @@ public class DisjointSet {
     public void union(Integer x, Integer y) {
         Integer setX = findSet(x);
         Integer setY = findSet(y);
-        if (setX == setY && setX != null && setY != null) {
+        if (setX != null && setY != null && setX.equals(setY)) {
             return;
         }
         if (setX == null) {
@@ -55,7 +45,7 @@ public class DisjointSet {
             nodeY.parent = x;
         } else {
             nodeX.parent = y;
-            if (nodeX.rank == nodeY.rank) {
+            if (nodeX.rank.equals(nodeY.rank)) {
                 nodeY.rank++;
             }
         }
@@ -64,9 +54,19 @@ public class DisjointSet {
     public int connectedBy(Integer x, Integer y) {
         Integer ySet = findSet(y);
         Integer xSet = findSet(x);
-        if((xSet == ySet) && xSet != null && ySet != null)
+        if (xSet != null && ySet != null && xSet.equals(ySet))
             return ySet;
         else
             return -1;
+    }
+
+    private static class Node {
+        Integer rank;
+        Integer parent;
+
+        Node(Integer parent, Integer rank) {
+            this.parent = parent;
+            this.rank = rank;
+        }
     }
 }

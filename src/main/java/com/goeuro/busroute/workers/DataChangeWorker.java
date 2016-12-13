@@ -13,14 +13,14 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by hhmx3422 on 12/11/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/11/16.
  */
 public class DataChangeWorker extends UntypedActor {
+    private static ActorRef dataChangeWorkerInstance;
     private final LoggingAdapter log = Logging.getLogger(getContext().system(), this);
     private final File dataFile;
     private final ActorRef routeFinderWorker;
     private long dataFileModifiedDate;
-    private static ActorRef dataChangeWorkerInstance;
     private DataChangeWorker(File dataFile, ActorRef routeFinderWorker) {
         this.dataFile = dataFile;
         this.routeFinderWorker=routeFinderWorker;

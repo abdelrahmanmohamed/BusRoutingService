@@ -1,7 +1,7 @@
 package com.goeuro.busroute.messages;
 
 /**
- * Created by hhmx3422 on 12/11/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/11/16.
  */
 public class FindRoute extends Message {
     private final int arrival;

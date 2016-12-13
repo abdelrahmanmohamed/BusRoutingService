@@ -9,13 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-
 
 /**
- * Created by hhmx3422 on 12/12/16.
+ * Created by Abdelrahman Mohamed Sayed on 12/12/16.
  */
 public class TestSample2 extends Common {
 
@@ -25,7 +21,7 @@ public class TestSample2 extends Common {
         system.log().info("Generate Test Data");
         int routesCount = 1000;
         int maxStationsNumberInRoute = 1000;
-        system.log().info("Test Data Generatation Finished");
+        system.log().info("Test Data Generation Finished");
         super.setup("sample2.txt", routesCount, maxStationsNumberInRoute);
     }
 
