@@ -11,6 +11,8 @@ import akka.http.javadsl.unmarshalling.StringUnmarshallers;
 import akka.util.Timeout;
 import com.goeuro.busroute.messages.FindRoute;
 import com.goeuro.busroute.messages.FindRouteResponse;
+import com.goeuro.busroute.messages.IsSystemAlive;
+import com.goeuro.busroute.messages.IsSystemAliveResponse;
 import scala.concurrent.duration.Duration;
 
 import java.util.UUID;
@@ -33,7 +35,7 @@ public class BusRoutingServiceHttpRoutes extends AllDirectives {
         this.log = log;
         this.system = system;
         this.busRouteFinder = busRouteFinder;
-        this.timeout = new Timeout(Duration.create(5, "seconds"));
+        this.timeout = new Timeout(Duration.create(10, "seconds"));
     }
 
     public Route createHttpRoutes() {
@@ -61,7 +63,13 @@ public class BusRoutingServiceHttpRoutes extends AllDirectives {
 
     private Route createHeartBeatRoute() {
         return get(() -> path("heartbeat", () ->
-                completeOK("{time:" + System.currentTimeMillis() + "}", Jackson.marshaller())
+                {
+                    CompletionStage<IsSystemAliveResponse> findRouteResponseFuture = ask(busRouteFinder,
+                            new IsSystemAlive(UUID.randomUUID().toString()),
+                            timeout).thenApply((IsSystemAliveResponse.class::cast));
+                    return onSuccess(() -> findRouteResponseFuture, response ->
+                            completeOK(response, Jackson.marshaller()));
+                }
         ));
     }
 

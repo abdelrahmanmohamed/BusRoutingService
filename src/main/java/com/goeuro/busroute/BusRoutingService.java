@@ -26,7 +26,7 @@ import java.util.concurrent.CompletionStage;
  * Created by Abdelrahman Mohamed Sayed on 12/11/16.
  */
 public class BusRoutingService {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         ActorSystem system = ActorSystem.create("system");
         LoggingAdapter log = system.log();
 

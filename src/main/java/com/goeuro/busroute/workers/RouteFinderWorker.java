@@ -4,9 +4,7 @@ import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.goeuro.busroute.datatstructures.DisjointSet;
-import com.goeuro.busroute.messages.DataChangedNotice;
-import com.goeuro.busroute.messages.FindRoute;
-import com.goeuro.busroute.messages.FindRouteResponse;
+import com.goeuro.busroute.messages.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,6 +69,8 @@ public class RouteFinderWorker extends UntypedActor {
             FindRouteResponse response = new FindRouteResponse(command.getDeparture(), command.getArrival(), parent != -1);
             log.info(response.toString() + " through " + parent);
             getSender().tell(response, getSelf());
+        } else if (message instanceof IsSystemAlive) {
+            getSender().tell(new IsSystemAliveResponse(((IsSystemAlive) message).getMessageId()), getSelf());
         }
     }
 

@@ -23,7 +23,10 @@ start() {
     local CMD="$RUN $DATA_FILE > \"$LOGFILE\" &"
     sh -c "$CMD"
     sh -c "(pgrep -f busroutingservice-1.0-SNAPSHOT-allinone.jar | head -1)" &> $PIDFILE
-    wget -qO- http://localhost:8088/heartbeat  &> /dev/null
+    echo "starting service"
+    while true;do
+    wget -qO- http://localhost:8088/heartbeat  &> /dev/null && break
+    done
     echo started
 }
 
