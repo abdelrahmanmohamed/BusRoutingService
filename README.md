@@ -105,8 +105,7 @@ Response:
 }
 ```
 ### Gating Load Test Results
-```html
-<html>
-<div w3-include-html="/gatling_results/loadtest-1481832325500/index.html" </div>
-</html>
-```
+10000 Request Handled By Akka
+Akka queue the requests in the actor mailbox and the actor handle them one by one
+you can results here gatling_results/index.html
+Note change max number of opened files in linux to recieve more connections 
