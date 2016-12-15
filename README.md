@@ -104,3 +104,8 @@ Response:
     "direct_bus_route": true
 }
 ```
+### Gating Load Test Results
+Project link: 
+```html
+<iframe width="560" height="315" src="/gatling_results/loadtest-1481832325500/index.html" frameborder="0"></iframe>
+```
