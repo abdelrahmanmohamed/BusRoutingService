@@ -104,8 +104,10 @@ Response:
     "direct_bus_route": true
 }
 ```
-### Gating Load Test Results
-10000 Request Handled By Akka
+### Gating Load Test Results 10K problem
+
+10000 Request Handled By Akka 
+
 Akka queue the requests in the actor mailbox and the actor handle them one by one
-you can results here gatling_results/index.html
+you can find results here `gatling_results/index.html`
 Note change max number of opened files in linux to recieve more connections 
