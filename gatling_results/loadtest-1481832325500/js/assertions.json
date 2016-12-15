@@ -1,0 +1,10 @@
+{
+  "simulation": "busroute.LoadTest",
+  "simulationId": "loadtest",
+  "start": 1481832325500,
+  "description": "",
+  "scenarios": ["Load Test"],
+  "assertions": [
+
+  ]
+}
