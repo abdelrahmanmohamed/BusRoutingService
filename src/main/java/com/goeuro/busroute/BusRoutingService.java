@@ -54,10 +54,10 @@ public class BusRoutingService {
             final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = httpRoutes
                     .flow(system, materializer);
             final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow,
-                    ConnectHttp.toHost("localhost", 8088), materializer);
+                    ConnectHttp.toHost("localhost", 80), materializer);
             reservationSystemRoutes.setBinding(binding);
             binding.whenComplete((serverBinding, throwable) ->
-                    log.info("Server online at http://localhost:8088/\nPress stop call http://localhost:8088/stop..."));
+                    log.info("Server online at http://localhost:80/\nPress stop call http://localhost:80/stop..."));
         }
     }
 }
