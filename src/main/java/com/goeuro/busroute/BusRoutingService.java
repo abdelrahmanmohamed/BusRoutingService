@@ -54,7 +54,7 @@ public class BusRoutingService {
             final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = httpRoutes
                     .flow(system, materializer);
             final CompletionStage<ServerBinding> binding = http.bindAndHandle(routeFlow,
-                    ConnectHttp.toHost("localhost", 8088), materializer);
+                    ConnectHttp.toHost("0.0.0.0", 8088), materializer);
             reservationSystemRoutes.setBinding(binding);
             binding.whenComplete((serverBinding, throwable) ->
                     log.info("Server online at http://localhost:8088/\nPress stop call http://localhost:8088/stop..."));
