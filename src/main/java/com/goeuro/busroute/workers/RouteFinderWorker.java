@@ -67,7 +67,7 @@ public class RouteFinderWorker extends UntypedActor {
             int parent = set.connectedBy(actualStationIdVsVirtualStationIndex.get(command.getArrival())
                     , actualStationIdVsVirtualStationIndex.get(command.getDeparture()));
             FindRouteResponse response = new FindRouteResponse(command.getDeparture(), command.getArrival(), parent != -1);
-            log.info(response.toString() + " through " + parent);
+            log.info(response.toString() + " through " + parent+":actor "+getSelf().path().toStringWithoutAddress());
             getSender().tell(response, getSelf());
         } else if (message instanceof IsSystemAlive) {
             getSender().tell(new IsSystemAliveResponse(((IsSystemAlive) message).getMessageId()), getSelf());

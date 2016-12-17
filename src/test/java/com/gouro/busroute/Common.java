@@ -8,7 +8,6 @@ import akka.http.javadsl.testkit.JUnitRouteTest;
 import akka.http.javadsl.testkit.TestRoute;
 import com.goeuro.busroute.BusRoutingServiceHttpRoutes;
 import com.goeuro.busroute.messages.CheckDataChanges;
-import com.goeuro.busroute.workers.DataChangeWorker;
 import com.goeuro.busroute.workers.RouteFinderWorker;
 
 import java.io.File;
@@ -28,16 +27,12 @@ public class Common extends JUnitRouteTest {
         dataFile = new File(fileName);
         writeSampleFile(routesCount, stationsNumberInRoute);
         ActorRef busRouteFinder = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
-        system.actorOf(Props.create(DataChangeWorker.class, dataFile, busRouteFinder))
-                .tell(new CheckDataChanges(UUID.randomUUID().toString()), ActorRef.noSender());
         appRoute = testRoute(new BusRoutingServiceHttpRoutes(system, busRouteFinder, system.log()).createHttpRoutes());
         Thread.sleep(1000);
     }
 
     public void setup() throws InterruptedException {
         ActorRef busRouteFinder = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
-        system.actorOf(Props.create(DataChangeWorker.class, dataFile, busRouteFinder))
-                .tell(new CheckDataChanges(UUID.randomUUID().toString()), ActorRef.noSender());
         appRoute = testRoute(new BusRoutingServiceHttpRoutes(system, busRouteFinder, system.log()).createHttpRoutes());
         Thread.sleep(1000);
     }
