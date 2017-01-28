@@ -7,13 +7,11 @@ import akka.actor.Props;
 import akka.http.javadsl.testkit.JUnitRouteTest;
 import akka.http.javadsl.testkit.TestRoute;
 import com.goeuro.busroute.BusRoutingServiceHttpRoutes;
-import com.goeuro.busroute.messages.CheckDataChanges;
 import com.goeuro.busroute.workers.RouteFinderWorker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.UUID;
 
 /**
  * Created by Abdelrahman Mohamed Sayed on 12/9/16.
@@ -26,13 +24,13 @@ public class Common extends JUnitRouteTest {
     public void setup(String fileName, int routesCount, int stationsNumberInRoute) throws FileNotFoundException, InterruptedException {
         dataFile = new File(fileName);
         writeSampleFile(routesCount, stationsNumberInRoute);
-        ActorRef busRouteFinder = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
+        ActorRef busRouteFinder[] = new ActorRef[]{system.actorOf(Props.create(RouteFinderWorker.class, dataFile))};
         appRoute = testRoute(new BusRoutingServiceHttpRoutes(system, busRouteFinder, system.log()).createHttpRoutes());
         Thread.sleep(1000);
     }
 
     public void setup() throws InterruptedException {
-        ActorRef busRouteFinder = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
+        ActorRef busRouteFinder[] = new ActorRef[]{system.actorOf(Props.create(RouteFinderWorker.class, dataFile))};
         appRoute = testRoute(new BusRoutingServiceHttpRoutes(system, busRouteFinder, system.log()).createHttpRoutes());
         Thread.sleep(1000);
     }

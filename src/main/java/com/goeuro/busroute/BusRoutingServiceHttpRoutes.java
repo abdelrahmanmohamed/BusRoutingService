@@ -15,6 +15,7 @@ import com.goeuro.busroute.messages.IsSystemAlive;
 import com.goeuro.busroute.messages.IsSystemAliveResponse;
 import scala.concurrent.duration.Duration;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
@@ -26,12 +27,13 @@ import static akka.pattern.PatternsCS.ask;
  */
 public class BusRoutingServiceHttpRoutes extends AllDirectives {
     private final Timeout timeout;
-    private final ActorRef busRouteFinder;
+    private final ActorRef[] busRouteFinder;
     private final LoggingAdapter log;
     private final ActorSystem system;
     private CompletionStage<ServerBinding> binding;
+    private Random random = new Random();
 
-    public BusRoutingServiceHttpRoutes(ActorSystem system, ActorRef busRouteFinder, LoggingAdapter log) {
+    public BusRoutingServiceHttpRoutes(ActorSystem system, ActorRef[] busRouteFinder, LoggingAdapter log) {
         this.log = log;
         this.system = system;
         this.busRouteFinder = busRouteFinder;
@@ -64,7 +66,7 @@ public class BusRoutingServiceHttpRoutes extends AllDirectives {
     private Route createHeartBeatRoute() {
         return get(() -> path("heartbeat", () ->
                 {
-                    CompletionStage<IsSystemAliveResponse> findRouteResponseFuture = ask(busRouteFinder,
+                    CompletionStage<IsSystemAliveResponse> findRouteResponseFuture = ask(busRouteFinder[0],
                             new IsSystemAlive(UUID.randomUUID().toString()),
                             timeout).thenApply((IsSystemAliveResponse.class::cast));
                     return onSuccess(() -> findRouteResponseFuture, response ->
@@ -76,10 +78,10 @@ public class BusRoutingServiceHttpRoutes extends AllDirectives {
     private Route getBusRoute(int arrival, int departure) {
         log.info("Request Received:departure=[{}],arrival=[{}]", departure, arrival);
         try {
-            CompletionStage findRouteResponseFuture = ask(busRouteFinder,
+            CompletionStage findRouteResponseFuture = ask(busRouteFinder[Math.abs(random.nextInt() % busRouteFinder.length)],
                     new FindRoute(UUID.randomUUID().toString(), departure, arrival),
                     timeout).thenApply((FindRouteResponse.class::cast));
-            return onSuccess(() -> findRouteResponseFuture, response -> completeOK(response, Jackson.marshaller()));
+            return completeOKWithFuture(findRouteResponseFuture, Jackson.marshaller());
         } catch (Exception e) {
             e.printStackTrace();
             return complete("System Failed");

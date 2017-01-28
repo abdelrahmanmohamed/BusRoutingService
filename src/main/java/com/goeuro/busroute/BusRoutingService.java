@@ -11,15 +11,12 @@ import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
 import akka.http.javadsl.server.Route;
-import akka.routing.FromConfig;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
-import com.goeuro.busroute.messages.CheckDataChanges;
 import com.goeuro.busroute.workers.RouteFinderWorker;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -41,14 +38,15 @@ public class BusRoutingService {
             log.error("data file path is invalid");
             system.terminate();
         } else {
-//            ActorRef busRouteFinder = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
-            ActorRef router1 =
-                    system.actorOf(FromConfig.getInstance().props(Props.create(RouteFinderWorker.class,dataFile)),
-                            "router1");
+            ActorRef[] busRouteFinder = new ActorRef[10];
+            for (int i = 0; i < busRouteFinder.length; i++) {
+                busRouteFinder[i] = system.actorOf(Props.create(RouteFinderWorker.class, dataFile));
+            }
+
             final Http http = Http.get(system);
             final ActorMaterializer materializer = ActorMaterializer.create(system);
             BusRoutingServiceHttpRoutes reservationSystemRoutes =
-                    new BusRoutingServiceHttpRoutes(system, router1,
+                    new BusRoutingServiceHttpRoutes(system, busRouteFinder,
                             system.log());
             Route httpRoutes = reservationSystemRoutes.createHttpRoutes();
             final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = httpRoutes
